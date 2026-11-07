@@ -1,0 +1,20 @@
+name: Repository checks
+on: [push, pull_request]
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject private demo dependencies and unresolved merges
+        shell: bash
+        run: |
+          if grep -RInE 'looker-private-demo|gaming_demo_dev|Xb2IL2W022TXYLgHiOkAYV|^(<<<<<<<|=======|>>>>>>>)' --include='*.lkml' --include='*.lookml' .; then
+            exit 1
+          fi
+      - name: Require deployment assets
+        shell: bash
+        run: |
+          test -s gamepulse.model.lkml
+          test -s sql/01_schema.sql
+          test -s sql/03_assertions.sql
+          test -s docs/DEPLOYMENT.md

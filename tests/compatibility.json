@@ -1,0 +1,107 @@
+{
+  "files": {
+    "LICENSE": "aa19d17e94437ab0655a9373ff9647b73b20feefcae09ed18ef357b0e4cc4567",
+    "derived_tables/user_facts.view.lkml": "7d02b80838a8d63220067e13cfe81a439a51ddab4ccaf05dff4f3f0d37eeed03",
+    "derived_tables/level_balancing.view.lkml": "f987143db21579afc8cd8854de28645c65c949887fd45856b0c6a3d538d473a3",
+    "derived_tables/top_countries.view.lkml": "3bb05c17f374f84da6b590b02dba857c0be1f5483740f3eb51e9accd520df5c8",
+    "derived_tables/session_facts.view.lkml": "bc8c5ab74e778d62193c46c5191a5ad67bd0b73be276d87af9bd93d7a04ca8a4",
+    "derived_tables/user_event_facts.view.lkml": "00476315ddfa3c72918d93790e235278a84679aa9dcc69e7d716e8a8b092ee79",
+    "derived_tables/funnel_explorer.view.lkml": "c53a6d4dab6dd583444e8ce46c694a1a0e2dbdf41765bf0172025b24f11ef5c1",
+    "views/events.view.lkml": "7f680118fcf5fca1dc884d4006d738c2ea98324e285dd3f7f812f867e738f072",
+    "sql/02_seed.sql": "5eba6c3b87e21b3552defaede4826cb35c455efcbdd0fba3246d0695a48e00c4",
+    "sql/04_benchmark.sql": "4ef8ddbc5ef56981a5a6148fde481251ed4520803f800bbdc1c2e9d6fc91d3c9",
+    "sql/01_schema.sql": "d82d3f1bd601473dd7b6ae828df042a9f59f57c695a5e7d475f553993f078b6c",
+    "sql/05_regression.sql": "2055b2f8d0b3041e8cb16f1287ddc5bd92d9db1b5a984fd057ded2f355b3c3ee",
+    "sql/03_assertions.sql": "65bbb92ac3d0ace91071306487df788b984d19189cf1c7b5ed5cfd11fe877e07",
+    "lookml_dashboards/daily_pulse.dashboard.lookml": "d53c218102b682b7dcf8070e598c2bfdc7efd5d45ad8dcf542b69db41ac35056",
+    "lookml_dashboards/gaming_monetization.dashboard.lookml": "d08dc59e30101c8996e220de1fbe81bafddb712f4cf091c805094800e6066e63",
+    "lookml_dashboards/session_funnel.dashboard.lookml": "c9734daba62213dc7fb21b57674f4135816dac2f214e59dbff18c8d34b3a7312"
+  },
+  "explores": {
+    "events": {
+      "always_filter": {
+        "filters__all": [
+          [
+            {
+              "events.event_date": "7 days"
+            }
+          ]
+        ]
+      },
+      "joins": [
+        {
+          "relationship": "many_to_one",
+          "sql_on": "${events.player_key} = ${user_facts.player_key}",
+          "name": "user_facts"
+        },
+        {
+          "relationship": "many_to_one",
+          "sql_on": "${events.unique_session_id} = ${session_facts.unique_session_id}",
+          "name": "session_facts"
+        }
+      ],
+      "name": "events"
+    },
+    "session_facts": {
+      "joins": [
+        {
+          "relationship": "many_to_one",
+          "sql_on": "${session_facts.player_key} = ${user_facts.player_key}",
+          "name": "user_facts"
+        }
+      ],
+      "name": "session_facts"
+    },
+    "user_facts": {
+      "name": "user_facts"
+    },
+    "funnel_explorer": {
+      "joins": [
+        {
+          "relationship": "many_to_one",
+          "sql_on": "${funnel_explorer.player_key} = ${user_facts.player_key}",
+          "name": "user_facts"
+        },
+        {
+          "relationship": "many_to_one",
+          "sql_on": "${funnel_explorer.unique_session_id} = ${session_facts.unique_session_id}",
+          "name": "session_facts"
+        }
+      ],
+      "name": "funnel_explorer"
+    },
+    "level_balancing": {
+      "joins": [
+        {
+          "relationship": "many_to_one",
+          "sql_on": "${level_balancing.player_key} = ${user_facts.player_key}",
+          "name": "user_facts"
+        }
+      ],
+      "name": "level_balancing"
+    },
+    "top_countries": {
+      "name": "top_countries"
+    },
+    "lifetime_user_facts": {
+      "name": "lifetime_user_facts"
+    }
+  },
+  "model_settings": {
+    "connection": "gamepulse_bigquery",
+    "label": "GamePulse Gaming Analytics",
+    "includes": [
+      "/views/*.view.lkml",
+      "/derived_tables/*.view.lkml",
+      "/lookml_dashboards/*.dashboard.lookml"
+    ],
+    "datagroups": [
+      {
+        "sql_trigger": "SELECT CAST(MAX(published_at) AS STRING) FROM `gamepulse.pipeline_state` WHERE status = 'complete'",
+        "max_cache_age": "24 hours",
+        "name": "events_raw"
+      }
+    ],
+    "persist_with": "events_raw"
+  }
+}

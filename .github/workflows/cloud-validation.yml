@@ -1,0 +1,47 @@
+name: Target environment validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  bigquery:
+    runs-on: ubuntu-latest
+    environment: validation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-dev.txt
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_VALIDATION_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: python scripts/build_regression.py /tmp/gamepulse-regression.sql
+      - name: Execute native BigQuery regression fixture
+        env:
+          VALIDATION_PROJECT: ${{ vars.GCP_PROJECT_ID }}
+        run: bq --project_id="$VALIDATION_PROJECT" --location=US query --use_legacy_sql=false --maximum_bytes_billed=1000000000 < /tmp/gamepulse-regression.sql
+  looker:
+    runs-on: ubuntu-latest
+    environment: validation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate deployed Looker project
+        env:
+          LOOKER_BASE_URL: ${{ vars.LOOKER_BASE_URL }}
+          LOOKER_PROJECT_ID: ${{ vars.LOOKER_PROJECT_ID }}
+          LOOKER_CLIENT_ID: ${{ secrets.LOOKER_CLIENT_ID }}
+          LOOKER_CLIENT_SECRET: ${{ secrets.LOOKER_CLIENT_SECRET }}
+        run: python scripts/validate_looker.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: looker-validation-summary
+          path: looker-validation-summary.json
+          if-no-files-found: ignore

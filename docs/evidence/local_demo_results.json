@@ -1,0 +1,125 @@
+{
+  "environment": "Local DuckDB execution of translated current LookML SQL; synthetic SHA256 bucket input; not BigQuery or Looker performance evidence",
+  "synthetic_anchor_date": "2026-10-31",
+  "as_of_date": "2026-11-01",
+  "workload": {
+    "events": 151149,
+    "players": 5000,
+    "sessions": 45399,
+    "revenue": 48501.62
+  },
+  "retention": [
+    {
+      "age_day": 1,
+      "eligible": 4950,
+      "retained": 3632,
+      "rate": 0.7337373737373737
+    },
+    {
+      "age_day": 7,
+      "eligible": 4660,
+      "retained": 2024,
+      "rate": 0.43433476394849785
+    },
+    {
+      "age_day": 14,
+      "eligible": 4312,
+      "retained": 993,
+      "rate": 0.23028756957328386
+    },
+    {
+      "age_day": 30,
+      "eligible": 3517,
+      "retained": 309,
+      "rate": 0.08785897071367643
+    }
+  ],
+  "campaigns": [
+    {
+      "campaign_name": "campaign-6",
+      "mature_players": 427,
+      "spend": 828.25,
+      "revenue": 1863.33,
+      "roas": 2.2497192876546936
+    },
+    {
+      "campaign_name": "campaign-7",
+      "mature_players": 442,
+      "spend": 903.5,
+      "revenue": 2044.53,
+      "roas": 2.2628998339789708
+    },
+    {
+      "campaign_name": "campaign-1",
+      "mature_players": 430,
+      "spend": 846.5,
+      "revenue": 2003.455,
+      "roas": 2.366751329001772
+    },
+    {
+      "campaign_name": "campaign-4",
+      "mature_players": 425,
+      "spend": 878.75,
+      "revenue": 2129.015,
+      "roas": 2.42277667140825
+    },
+    {
+      "campaign_name": "campaign-5",
+      "mature_players": 421,
+      "spend": 829.25,
+      "revenue": 2048.44,
+      "roas": 2.4702321374736207
+    },
+    {
+      "campaign_name": "campaign-2",
+      "mature_players": 464,
+      "spend": 919.0,
+      "revenue": 2330.505,
+      "roas": 2.535914036996736
+    },
+    {
+      "campaign_name": "campaign-0",
+      "mature_players": 421,
+      "spend": 816.75,
+      "revenue": 2217.575,
+      "roas": 2.7151209060299966
+    },
+    {
+      "campaign_name": "campaign-3",
+      "mature_players": 465,
+      "spend": 922.75,
+      "revenue": 2749.425,
+      "roas": 2.9795990246545654
+    }
+  ],
+  "monetization": [
+    {
+      "value_segment": "Payer",
+      "players": 2669,
+      "payers": 2669,
+      "revenue": 46230.47
+    },
+    {
+      "value_segment": "High value",
+      "players": 19,
+      "payers": 19,
+      "revenue": 2086.11
+    },
+    {
+      "value_segment": "Non-payer",
+      "players": 2312,
+      "payers": 0,
+      "revenue": 185.04
+    }
+  ],
+  "concentration": {
+    "top_decile_share": 0.5927274181769598
+  },
+  "funnel": {
+    "step1": 45399,
+    "step2": 40730,
+    "step3": 31752,
+    "step4": 3896,
+    "median_completion_seconds": 327.0
+  }
+}
